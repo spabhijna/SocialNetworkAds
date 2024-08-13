@@ -14,7 +14,7 @@ st.title("Social Network Ads Analysis")
 # Load data
 @st.cache_data
 def load_data():
-    return pd.read_csv("https://raw.githubusercontent.com/spabhijna/SocialNetworkAds/main/Data/Preprocessed_Social_Network_Ads.csv")
+    return pd.read_csv("Preprocessed_Social_Network_Ads.csv")
 
 df = load_data()
 
