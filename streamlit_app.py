@@ -1,7 +1,8 @@
+
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix
@@ -33,19 +34,28 @@ st.subheader("Visualizations")
 # Age distribution
 st.write("Age Distribution")
 fig, ax = plt.subplots()
-sns.histplot(data=df, x='Age', kde=True, ax=ax)
+ax.hist(df['Age'], bins=20, edgecolor='black')
+ax.set_xlabel('Age')
+ax.set_ylabel('Frequency')
 st.pyplot(fig)
 
 # Salary distribution
 st.write("Estimated Salary Distribution")
 fig, ax = plt.subplots()
-sns.histplot(data=df, x='EstimatedSalary', kde=True, ax=ax)
+ax.hist(df['EstimatedSalary'], bins=20, edgecolor='black')
+ax.set_xlabel('Estimated Salary')
+ax.set_ylabel('Frequency')
 st.pyplot(fig)
 
 # Correlation heatmap
 st.write("Correlation Heatmap")
 fig, ax = plt.subplots(figsize=(10, 8))
-sns.heatmap(df.corr(), annot=True, cmap='coolwarm', ax=ax)
+im = ax.imshow(df.corr(), cmap='coolwarm')
+ax.set_xticks(range(len(df.columns)))
+ax.set_yticks(range(len(df.columns)))
+ax.set_xticklabels(df.columns, rotation=45, ha='right')
+ax.set_yticklabels(df.columns)
+plt.colorbar(im)
 st.pyplot(fig)
 
 # Model Training
@@ -67,9 +77,17 @@ st.text(classification_report(y_test, y_pred))
 st.write("Confusion Matrix:")
 cm = confusion_matrix(y_test, y_pred)
 fig, ax = plt.subplots()
-sns.heatmap(cm, annot=True, fmt='d', ax=ax)
-plt.ylabel('Actual')
-plt.xlabel('Predicted')
+im = ax.imshow(cm, cmap='Blues')
+ax.set_xlabel('Predicted')
+ax.set_ylabel('Actual')
+ax.set_xticks([0, 1])
+ax.set_yticks([0, 1])
+ax.set_xticklabels(['Not Purchased', 'Purchased'])
+ax.set_yticklabels(['Not Purchased', 'Purchased'])
+for i in range(2):
+    for j in range(2):
+        ax.text(j, i, str(cm[i, j]), ha='center', va='center')
+plt.colorbar(im)
 st.pyplot(fig)
 
 # Feature importance
@@ -78,8 +96,10 @@ feature_importance = pd.DataFrame({'feature': X.columns, 'importance': abs(model
 feature_importance = feature_importance.sort_values('importance', ascending=False)
 
 fig, ax = plt.subplots()
-sns.barplot(x='importance', y='feature', data=feature_importance, ax=ax)
-plt.title('Feature Importance')
+ax.barh(feature_importance['feature'], feature_importance['importance'])
+ax.set_xlabel('Importance')
+ax.set_ylabel('Feature')
+ax.set_title('Feature Importance')
 st.pyplot(fig)
 
 # Prediction
